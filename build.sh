@@ -1,1 +1,3 @@
 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make M=$PWD -C ~/rk3288/linux CONFIG_MALI_MIDGARD=m CONFIG_MALI_DEVFREQ=y CONFIG_MALI_DMA_FENCE=y CONFIG_MALI_EXPERT=y CONFIG_MALI_PLATFORM_THIRDPARTY=y CONFIG_MALI_PLATFORM_THIRDPARTY_NAME=rk
+
+ make -j 4 KERNEL_SRC=/home/chen/workbench/rk-yocto-bsp/wayland/tmp/work-shared/tinker-rk3288/kernel-source KERNEL_PATH=/home/chen/workbench/rk-yocto-bsp/wayland/tmp/work-shared/tinker-rk3288/kernel-source KERNEL_VERSION=4.11.0-rc7 CC=arm-rk-linux-gnueabi-gcc   -fuse-ld=bfd LD=arm-rk-linux-gnueabi-ld.bfd   AR=arm-rk-linux-gnueabi-ar  O=/home/chen/workbench/rk-yocto-bsp/wayland/tmp/work-shared/tinker-rk3288/kernel-build-artifacts KBUILD_EXTRA_SYMBOLS=
