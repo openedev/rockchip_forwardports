@@ -45,7 +45,7 @@
 #define dev_pm_opp_get_opp_count opp_get_opp_count
 #define dev_pm_opp_find_freq_ceil opp_find_freq_ceil
 #endif /* Linux >= 3.13 */
-
+#include <linux/of.h>
 
 static int
 kbase_devfreq_target(struct device *dev, unsigned long *target_freq, u32 flags)
