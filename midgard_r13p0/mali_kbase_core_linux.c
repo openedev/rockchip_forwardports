@@ -1066,11 +1066,11 @@ static int assign_irqs(struct platform_device *pdev)
 		}
 
 #ifdef CONFIG_OF
-		if (!strcmp(irq_res->name, "JOB")) {
+		if (!strcmp(irq_res->name, "job")) {
 			irqtag = JOB_IRQ_TAG;
-		} else if (!strcmp(irq_res->name, "MMU")) {
+		} else if (!strcmp(irq_res->name, "mmu")) {
 			irqtag = MMU_IRQ_TAG;
-		} else if (!strcmp(irq_res->name, "GPU")) {
+		} else if (!strcmp(irq_res->name, "gpu")) {
 			irqtag = GPU_IRQ_TAG;
 		} else {
 			dev_err(&pdev->dev, "Invalid irq res name: '%s'\n",
