@@ -1,3 +1,19 @@
-ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make M=$PWD -C ~/rk3288/linux CONFIG_MALI_MIDGARD=m CONFIG_MALI_DEVFREQ=y CONFIG_MALI_DMA_FENCE=y CONFIG_MALI_EXPERT=y CONFIG_MALI_PLATFORM_THIRDPARTY=y CONFIG_MALI_PLATFORM_THIRDPARTY_NAME=rk
+export CFLAGS=" -DCONFIG_MALI_MIDGARD -DCONFIG_MALI_MIDGARD_MODULE -DCONFIG_MALI_DEVFREQ \
+        -DCONFIG_MALI_DMA_FENCE -DCONFIG_MALI_EXPERT -DCONFIG_MALI_PLATFORM_THIRDPARTY \
+        -DCONFIG_MALI_PLATFORM_THIRDPARTY_NAME=rk -I ${PWD}/include"
 
- make -j 4 KERNEL_SRC=/home/chen/workbench/rk-yocto-bsp/wayland/tmp/work-shared/tinker-rk3288/kernel-source KERNEL_PATH=/home/chen/workbench/rk-yocto-bsp/wayland/tmp/work-shared/tinker-rk3288/kernel-source KERNEL_VERSION=4.11.0-rc7 CC=arm-rk-linux-gnueabi-gcc   -fuse-ld=bfd LD=arm-rk-linux-gnueabi-ld.bfd   AR=arm-rk-linux-gnueabi-ar  O=/home/chen/workbench/rk-yocto-bsp/wayland/tmp/work-shared/tinker-rk3288/kernel-build-artifacts KBUILD_EXTRA_SYMBOLS=
+
+# export ARCH=arm
+# export CROSS_COMPILE=arm-linux-gnueabihf-
+
+export ARCH=arm64
+export CROSS_COMPILE=aarch64-linux-gnu-
+
+make -j 4 KERNEL_SRC=../kernel \
+    KERNEL_PATH=../kernel \
+    CONFIG_MALI_MIDGARD=m CONFIG_MALI_DEVFREQ=y CONFIG_MALI_DMA_FENCE=y \
+    CONFIG_MALI_EXPERT=y CONFIG_MALI_PLATFORM_THIRDPARTY=y CONFIG_MALI_PLATFORM_THIRDPARTY_NAME=rk \
+    CONFIG_RK_VCODEC=m
+
+
+# ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make M=$PWD -C ~/rk3288/linux CONFIG_MALI_MIDGARD=m CONFIG_MALI_DEVFREQ=y CONFIG_MALI_DMA_FENCE=y CONFIG_MALI_EXPERT=y CONFIG_MALI_PLATFORM_THIRDPARTY=y CONFIG_MALI_PLATFORM_THIRDPARTY_NAME=rk
