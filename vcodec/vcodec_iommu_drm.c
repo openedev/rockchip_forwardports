@@ -43,6 +43,8 @@
 
 #include "vcodec_iommu_ops.h"
 
+#define DMA_ERROR_CODE	(~(dma_addr_t)0)
+
 struct vcodec_drm_buffer {
 	struct list_head list;
 	struct dma_buf *dma_buf;
