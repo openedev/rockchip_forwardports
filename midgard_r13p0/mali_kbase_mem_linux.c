@@ -1570,7 +1570,12 @@ static int zap_range_nolock(struct mm_struct *mm,
 		if (end < local_end)
 			local_end = end;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 18, 0)
+		zap_vma_ptes(vma, local_start, local_end - local_start);
+		err = 0;
+#else
 		err = zap_vma_ptes(vma, local_start, local_end - local_start);
+#endif
 		if (unlikely(err))
 			break;
 
@@ -1840,8 +1845,11 @@ static void kbase_cpu_vm_close(struct vm_area_struct *vma)
 
 KBASE_EXPORT_TEST_API(kbase_cpu_vm_close);
 
-
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 18, 0)
+static vm_fault_t kbase_cpu_vm_fault(struct vm_fault *vmf)
+#else
 static int kbase_cpu_vm_fault(struct vm_fault *vmf)
+#endif
 {
 	struct vm_area_struct *vma = vmf->vma;
 	struct kbase_cpu_mapping *map = vma->vm_private_data;
@@ -1870,8 +1878,13 @@ static int kbase_cpu_vm_fault(struct vm_fault *vmf)
 	for (i = rel_pgoff;
 	     i < MIN((vma->vm_end - vma->vm_start) >> PAGE_SHIFT,
 	     map->alloc->nents - map->page_off); i++) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 18, 0)
+		vm_fault_t ret = vmf_insert_pfn(vma, map->vm_start + (i << PAGE_SHIFT),
+    			PFN_DOWN(map->alloc->pages[map->page_off + i]));
+#else
 		int ret = vm_insert_pfn(vma, map->vm_start + (i << PAGE_SHIFT),
-		    PFN_DOWN(map->alloc->pages[map->page_off + i]));
+    			PFN_DOWN(map->alloc->pages[map->page_off + i]));
+#endif
 		if (ret < 0 && ret != -EBUSY)
 			goto locked_bad_fault;
 	}
@@ -1896,7 +1909,11 @@ static int kbase_cpu_mmap(struct kbase_va_region *reg, struct vm_area_struct *vm
 	struct kbase_cpu_mapping *map;
 	u64 start_off = vma->vm_pgoff - reg->start_pfn;
 	phys_addr_t *page_array;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 18, 0)
+	vm_fault_t err = 0;
+#else
 	int err = 0;
+#endif
 	int i;
 
 	map = kzalloc(sizeof(*map), GFP_KERNEL);
@@ -1949,7 +1966,11 @@ static int kbase_cpu_mmap(struct kbase_va_region *reg, struct vm_area_struct *vm
 		for (i = 0; i < nr_pages; i++) {
 			unsigned long pfn = PFN_DOWN(page_array[i + start_off]);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 18, 0)
+			err = vmf_insert_pfn(vma, addr, pfn);
+#else
 			err = vm_insert_pfn(vma, addr, pfn);
+#endif
 			if (WARN_ON(err))
 				break;
 
